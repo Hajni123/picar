@@ -1,0 +1,66 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install system dependencies
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install -y build-essential git python3-pip ccache libncurses5:i386 libstdc++6:i386 libz1:i386 zlib1g-dev openjdk-17-jdk wget unzip
+
+    - name: Install Buildozer and Cython
+      run: |
+        python -m pip install --upgrade pip
+        # A legújabb buildozer a python-for-android "master" ágát git-cloneolja,
+        # ami folyamatosan a legújabb Python/Ubuntu/pip verziókat próbálja
+        # használni -- ez okozta az eddigi töréseket. Egy régebbi, évek óta
+        # stabilnak számító buildozer kiadásra rögzítjük, ami egy fixált,
+        # tesztelt python-for-android verziót használ.
+        python -m pip install cython==0.29.36 buildozer==1.5.0
+
+    - name: Preinstall Android SDK & Build-Tools
+      run: |
+        SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
+        mkdir -p "$SDK_DIR/cmdline-tools"
+        wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+        unzip -q cmdline-tools.zip -d "$SDK_DIR/cmdline-tools"
+        mv "$SDK_DIR/cmdline-tools/cmdline-tools" "$SDK_DIR/cmdline-tools/latest"
+
+        export PATH="$SDK_DIR/cmdline-tools/latest/bin:$PATH"
+        yes | sdkmanager --licenses > /dev/null || true
+        sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+        # A jelenlegi python-for-android még a Google által rég megszüntetett,
+        # elavult "tools/bin/sdkmanager" helyen keresi a sdkmanager-t -- ezt
+        # itt pótoljuk egy symlinkkel a modern cmdline-tools-ra mutatva, hogy
+        # a "sdkmanager is not installed" hiba ne álljon elő.
+        mkdir -p "$SDK_DIR/tools/bin"
+        ln -sf "$SDK_DIR/cmdline-tools/latest/bin/sdkmanager" "$SDK_DIR/tools/bin/sdkmanager"
+
+    - name: Run Buildozer
+      env:
+        # A Gradle Android plugin Java 17-et igényel, de a runner-en a
+        # rendszer alapértelmezett "java" a 11-es -- ezt kényszerítjük 17-re.
+        JAVA_HOME: /usr/lib/jvm/temurin-17-jdk-amd64
+      run: |
+        python -m buildozer -v android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: package
+        path: bin/*.apk
