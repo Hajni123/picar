@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['balra_nyil', 'bolya', 'jobbra_nyil']
+
+roboflow:
+  workspace: hajnalkas-workspace
+  project: picar_jelzesek
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/hajnalkas-workspace/picar_jelzesek/dataset/1

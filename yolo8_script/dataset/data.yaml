@@ -1,0 +1,31 @@
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 24
+
+names: 
+  0: arm
+  1: backpack
+  2: ball
+  3: box
+  4: cable
+  5: carpet
+  6: ceiling
+  7: desk
+  8: door
+  9: fan
+  10: flower
+  11: furniture
+  12: lamp
+  13: laptop
+  14: loudspeaker
+  15: mirror
+  16: mobilephone
+  17: roll
+  18: sofa
+  19: stool
+  20: toy
+  21: tv
+  22: vase
+  23: weight
