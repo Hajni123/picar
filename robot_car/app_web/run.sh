@@ -41,6 +41,8 @@ while true; do
         ENGINE="det"
     elif [ $TARGET_ENGINE_CODE -eq 20 ]; then
         ENGINE="seg"
+    elif [ $TARGET_ENGINE_CODE -eq 30 ]; then
+        ENGINE="edges"
     fi
 
     sleep 0.3

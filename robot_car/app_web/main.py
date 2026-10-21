@@ -104,9 +104,9 @@ class PiCarControlApp(App):
         )
 
         modes = [
-            ("1: Kezi", "mode_1"),
-            ("2: Kovetes", "mode_2"),
-            ("3: Kerules", "mode_3")
+            ("1: Kézi", "mode_1"),
+            ("2: Követés", "mode_2"),
+            ("3: Kerülés", "mode_3")
         ]
 
         for text, command in modes:
@@ -136,7 +136,7 @@ class PiCarControlApp(App):
         )
 
         model_button = Button(
-            text="M: Modell valtas",
+            text="M: Modellváltás",
             background_normal="",
             background_color=(0.9, 0.5, 0.1, 1),
             color=(1, 1, 1, 1),
@@ -151,7 +151,7 @@ class PiCarControlApp(App):
         mode_layout_bottom.add_widget(model_button)
 
         enhance_button = Button(
-            text="C: Kepjavitas",
+            text="C: Képjavítás",
             background_normal="",
             background_color=(0.5, 0.25, 0.7, 1),
             color=(1, 1, 1, 1),
@@ -192,7 +192,7 @@ class PiCarControlApp(App):
         )
 
         forward_button = RoundedNavButton(
-            text="Elore",
+            text="Előre",
             color=(1, 1, 1, 1),
             font_size="11sp",
             bold=True
@@ -248,7 +248,7 @@ class PiCarControlApp(App):
         )
 
         backward_button = RoundedNavButton(
-            text="Hatra",
+            text="Hátra",
             color=(1, 1, 1, 1),
             font_size="11sp",
             bold=True
